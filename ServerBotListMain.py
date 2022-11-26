@@ -89,11 +89,7 @@ class ServerListBot():
                 self.handles_buffer = self.handles_buffer + imageHandles
                 # imageUrl = message.attachments[0].url
                 # imageHandles = self.handleocr.fetch_handles_from_mobiglass_screenshot(imageUrl)
-
-    #@client.event
-    async def on_message(self,message):
-        self.detect_and_handle_image_message(message)
- 
+    async def handle_operation_termination_message(self,message):
         if message.content.lower() == 'done':
             # response = self.test()
             #await message.channel.send(f"Org Counts {json.dumps(dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1])), indent=4)}\n\n Org Players {json.dumps(self.orgsPlayers_buffer,sort_keys=True, indent=4)}")
@@ -126,20 +122,21 @@ class ServerListBot():
             for item in dict(sorted(self.orgsPlayers_buffer.items(), key=lambda item: -len(item[1]) )).items():
                 #time.sleep(1)
                 if(len(item[1])>1):
-                    print(f"{item[0]} : {item[1]}") 
+                    print(f"{item[0]} : {item[1]}")
 
             embedVar = discord.Embed(title="Server's Organizations", description="Only showing organization with at least 2 players", color=0xff0000)
             sortedCountDict = dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1]))
             filteredCountDict = dict([item for item in sortedCountDict.items() if item[1] >= 2 and "ERROR" not in item[0]])
-         
-
             embedVar.add_field(name="Organizations", value="\n".join([name for name in list(filteredCountDict.keys())]), inline=True)
             embedVar.add_field(name="Count", value="\n".join([str(num) for num in filteredCountDict.values()]), inline=True)
             self.orgsCount_buffer = {}
             self.orgsPlayers_buffer = {}
             self.handles_buffer = []
             await message.channel.send(embed=embedVar)
-
+    #@client.event
+    async def on_message(self,message):
+        self.detect_and_handle_image_message(message)
+        self.handle_operation_termination_message(message)
 
         if message.author == self.client.user:
             return
