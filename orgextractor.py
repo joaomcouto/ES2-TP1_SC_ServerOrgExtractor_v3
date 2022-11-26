@@ -35,11 +35,7 @@ class OrgExtractor(BaseCrawler):
         else:
             return False
 
-    
-
-    def get_org_name(self, playerHandle):
-        super().access_url("https://robertsspaceindustries.com/citizens/" + playerHandle + "/organizations")
-        
+    def handle_profile_corner_cases(self, playerHandle):
         if(self.handle_doesnt_exist()):
             raise Exception("ERROR: OCR HANDLE WRONG")
         try:
@@ -61,13 +57,14 @@ class OrgExtractor(BaseCrawler):
         
         if "NO ORG MEMBERSHIP FOUND" in self.currentWrapper.text:
             return ["NO ORG"]
-        else:
-            try:
-                orgNameElement = self.wait_elements_visibility_and_return_them(self.currentWrapper, (By.XPATH, '//a[contains(@href,"/orgs/") and contains(@class,"value")]'))
-            except Exception as e:
-                print(f"Couldn't get orgs for handle {playerHandle}")
-                raise Exception("ERROR FINDING ORGS FOR HANDLE")
 
-            return([a.text for a in orgNameElement])
+    def get_org_name(self, playerHandle):
+        super().access_url("https://robertsspaceindustries.com/citizens/" + playerHandle + "/organizations")
+        self.handle_profile_corner_cases(playerHandle)
+        try:
+            orgNameElement = self.wait_elements_visibility_and_return_them(self.currentWrapper, (By.XPATH, '//a[contains(@href,"/orgs/") and contains(@class,"value")]'))
+        except Exception as e:
+            print(f"Couldn't get orgs for handle {playerHandle}")
+            raise Exception("ERROR FINDING ORGS FOR HANDLE")
 
-    
+        return([a.text for a in orgNameElement])
