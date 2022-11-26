@@ -89,41 +89,8 @@ class ServerListBot():
                 self.handles_buffer = self.handles_buffer + imageHandles
                 # imageUrl = message.attachments[0].url
                 # imageHandles = self.handleocr.fetch_handles_from_mobiglass_screenshot(imageUrl)
-    async def handle_operation_termination_message(self,message):
-        if message.content.lower() == 'done':
-            # response = self.test()
-            #await message.channel.send(f"Org Counts {json.dumps(dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1])), indent=4)}\n\n Org Players {json.dumps(self.orgsPlayers_buffer,sort_keys=True, indent=4)}")
-            # await message.channel.send(f"Org Counts {json.dumps(dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1])), indent=4)}")
-            for handle in self.handles_buffer:
-    
-                possibleHandles = self.get_possible_handles(handle.lower())
-
-                for cleanHandle in possibleHandles:
-                    print(f"Fetching org for {cleanHandle}")
-                    try:
-                        handleOrgsFound = self.orgextractor.get_org_name(cleanHandle)
-                        break
-                    except Exception as e:
-                        print(str(e))
-                        handleOrgsFound = [str(e)]    
-
-                for org in handleOrgsFound:
-                    if org not in list(self.orgsCount_buffer.keys()):
-                        self.orgsCount_buffer[org] = 1
-                    else:
-                        self.orgsCount_buffer[org] = self.orgsCount_buffer[org] + 1
-
-                    if org not in list(self.orgsPlayers_buffer.keys()):
-                        self.orgsPlayers_buffer[org] = [cleanHandle]
-                    else:
-                        self.orgsPlayers_buffer[org] = self.orgsPlayers_buffer[org] + [cleanHandle]
-
-            #filteredPlayerDict= dict([item for item in self.orgsPlayers_buffer.items() if len(item[1])> 4 and item[0]])
-            for item in dict(sorted(self.orgsPlayers_buffer.items(), key=lambda item: -len(item[1]) )).items():
-                #time.sleep(1)
-                if(len(item[1])>1):
-                    print(f"{item[0]} : {item[1]}")
-
+    async def generate_result_presentation_embed(self,message):
+            self.generate_result_presentation_embed()
             embedVar = discord.Embed(title="Server's Organizations", description="Only showing organization with at least 2 players", color=0xff0000)
             sortedCountDict = dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1]))
             filteredCountDict = dict([item for item in sortedCountDict.items() if item[1] >= 2 and "ERROR" not in item[0]])
@@ -133,6 +100,45 @@ class ServerListBot():
             self.orgsPlayers_buffer = {}
             self.handles_buffer = []
             await message.channel.send(embed=embedVar)
+
+    async def get_orgs_from_handles_buffer(self):
+        for handle in self.handles_buffer:    
+            possibleHandles = self.get_possible_handles(handle.lower())
+
+            for cleanHandle in possibleHandles:
+                print(f"Fetching org for {cleanHandle}")
+                try:
+                    handleOrgsFound = self.orgextractor.get_org_name(cleanHandle)
+                    break
+                except Exception as e:
+                    print(str(e))
+                    handleOrgsFound = [str(e)]   
+                for org in handleOrgsFound:
+                    if org not in list(self.orgsCount_buffer.keys()):
+                        self.orgsCount_buffer[org] = 1
+                    else:
+                        self.orgsCount_buffer[org] = self.orgsCount_buffer[org] + 1
+
+                    if org not in list(self.orgsPlayers_buffer.keys()):
+                        self.orgsPlayers_buffer[org] = [cleanHandle]
+                    else:
+                        self.orgsPlayers_buffer[org] = self.orgsPlayers_buffer[org] + [cleanHandle] 
+
+        return handleOrgsFound
+    async def handle_operation_termination_message(self,message):
+        if message.content.lower() == 'done':
+            # response = self.test()
+            #await message.channel.send(f"Org Counts {json.dumps(dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1])), indent=4)}\n\n Org Players {json.dumps(self.orgsPlayers_buffer,sort_keys=True, indent=4)}")
+            # await message.channel.send(f"Org Counts {json.dumps(dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1])), indent=4)}")
+            self.get_orgs_from_handles_buffer()     
+
+            #filteredPlayerDict= dict([item for item in self.orgsPlayers_buffer.items() if len(item[1])> 4 and item[0]])
+            for item in dict(sorted(self.orgsPlayers_buffer.items(), key=lambda item: -len(item[1]) )).items():
+                #time.sleep(1)
+                if(len(item[1])>1):
+                    print(f"{item[0]} : {item[1]}")
+            self.generate_result_presentation_embed(message)
+
     #@client.event
     async def on_message(self,message):
         self.detect_and_handle_image_message(message)
