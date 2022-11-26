@@ -1,4 +1,5 @@
 # ES2-TP1_SC_ServerOrgExtractor_v3
+#Membros do grupo: João Marcos Machado Couto 
 **STATUS**
 Sucessfully deployed on a Google Cloud Engine e2-small instance and is constantly available for queries in a private discord.
 
