@@ -60,15 +60,4 @@ class OrgExtractor(BaseCrawler):
 
             return([a.text for a in orgNameElement])
 
-    def get_possible_handles(self, handle):
-        #Asummes lowered handle
-        possibleHandles = []
-        if(" " not in handle):
-            possibleHandles =[handle]
-        if(" " in handle):
-            possibleHandles = possibleHandles + [handle.replace(" ", "_") , handle.replace(" ", "")]
-        if("o" in handle):
-            possibleHandles = possibleHandles + [handle.replace("o", "0")]
-        if("0" in handle):
-            possibleHandles = possibleHandles + [handle.replace("0", "o")]
-        return possibleHandles
+    

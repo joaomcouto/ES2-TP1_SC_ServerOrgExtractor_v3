@@ -48,6 +48,19 @@ class ServerListBot():
     def test(self):
         return 'Test sucessful from bot thread #2, ready for queries.'
 
+    def get_possible_handles(self, handle):
+        #Asummes lowered handle
+        possibleHandles = []
+        if(" " not in handle):
+            possibleHandles =[handle]
+        if(" " in handle):
+            possibleHandles = possibleHandles + [handle.replace(" ", "_") , handle.replace(" ", "")]
+        if("o" in handle):
+            possibleHandles = possibleHandles + [handle.replace("o", "0")]
+        if("0" in handle):
+            possibleHandles = possibleHandles + [handle.replace("0", "o")]
+        return possibleHandles
+
     #@client.event
     async def on_ready(self):
         print(f'{self.client.user} has connected to Discord!')
@@ -84,7 +97,7 @@ class ServerListBot():
             # await message.channel.send(f"Org Counts {json.dumps(dict(sorted(self.orgsCount_buffer.items(), key=lambda item: -item[1])), indent=4)}")
             for handle in self.handles_buffer:
     
-                possibleHandles = self.orgextractor.get_possible_handles(handle.lower())
+                possibleHandles = self.get_possible_handles(handle.lower())
 
                 for cleanHandle in possibleHandles:
                     print(f"Fetching org for {cleanHandle}")
