@@ -68,7 +68,7 @@ class ServerListBot():
         await deployedChannelObject.send(f"Bot thread #2 'Server Hunter' deployed to channel {self.deployedChannel}, ready for queries. If you were expecting results this means the bot dropped connected for a second and had to reset.")
         #channel = discord.utils.get(client.get_all_channels(), name="testing")
 
-    async def detect_and_handle_images(self,message):
+    async def detect_and_handle_image_message(self, message):
         if(message.channel == discord.utils.get(self.client.get_all_channels(), name=self.deployedChannel)):
             if(len(message.attachments) > 0):
                 if( len(self.handles_buffer) > 0 and (time.time() - self.buffer_start_time) > 60*5):
@@ -92,7 +92,7 @@ class ServerListBot():
 
     #@client.event
     async def on_message(self,message):
-        self.handle_image_messages(message)
+        self.detect_and_handle_image_message(message)
  
         if message.content.lower() == 'done':
             # response = self.test()
