@@ -10,7 +10,6 @@ class OrgExtractor(BaseCrawler):
         super().__init__(browser)
 
         
-
     def wait_element_visibility_and_return_it(self,expected_location, element_locator):
         myElem = WebDriverWait(expected_location, 6).until(EC.visibility_of_element_located(element_locator))
         return myElem
@@ -28,14 +27,22 @@ class OrgExtractor(BaseCrawler):
         self.main_wrapper_locator = main_wrapper_locator
         self.currentWrapper = WebDriverWait(self.driver, 6).until(EC.visibility_of_element_located(self.main_wrapper_locator))
 
+    def handle_doesnt_exist(self): #####Extract method
+        title = self.driver.title
+        if "404 - Rob" in title:
+            print("HANDLE NÃO EXISTE VIA 404")
+            return True
+        else:
+            return False
+
+    
+
     def get_org_name(self, playerHandle):
         super().access_url("https://robertsspaceindustries.com/citizens/" + playerHandle + "/organizations")
         
-
-        if ("404 - Rob" in self.driver.title):
+        if(self.handle_doesnt_exist()):
             raise Exception("ERROR: OCR HANDLE WRONG")
         try:
-             
             _ = self.wait_and_set_main_wrapper((By.ID ,'public-profile'))
             #_ = self.wait_element_visibility_and_return_it(self.driver, self.main_wrapper_locator)
         except Exception as e:
