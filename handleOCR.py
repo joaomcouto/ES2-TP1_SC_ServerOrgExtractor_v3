@@ -8,10 +8,7 @@ import ast
 
 
 class HandleOCR():
-    def fetch_handles_from_mobiglass_screenshot(self,image_url):
-        creds = service_account.Credentials.from_service_account_file('./vision.json')
-        client = vision.ImageAnnotatorClient(credentials=creds,)
-
+    def load_image(self,image_url):
         try:
             img_data = requests.get(image_url).content
             with Image.open(io.BytesIO(img_data)) as im:
@@ -21,6 +18,11 @@ class HandleOCR():
             errorStub = {image_url : "ERROR DURING INITIAL IMAGE DOWNLOAD/OPEN, SKIPPING"}
             print(errorStub)
 
+    def fetch_handles_from_mobiglass_screenshot(self,image_url):
+        creds = service_account.Credentials.from_service_account_file('./vision.json')
+        client = vision.ImageAnnotatorClient(credentials=creds,)
+        self.load_image(self,image_url)
+        
         imageFile = open("temp.jpeg", "rb")
         request = {
             "image": {
