@@ -1,4 +1,6 @@
 # ES2-TP1_SC_ServerOrgExtractor_v3
+**STATUS**
+Sucessfully deployed on a Google Cloud Engine e2-small instance and is constantly available for queries in the Shadow Moses private discord.
 
 **Class ServerBotList:**
 
@@ -15,5 +17,4 @@
   For the extraction of players organizations, it employs several scripts implemented using Selenium, which access and identify the HTML elements associated with a player's organization. This proved to be one of the bigger challenges on implementing this bot, since player profile pages found under the star citizen website (https://robertsspaceindustries.com/) offer a large array of possible HTML structures according to a few scenario: player has no org, player has multiple orgs, player has a REDACTED org, player not found. Thus, it was necessary to implement various corner cases handling functions as to deal with these very different scenarios. This proved even harder since it was paramount to be able to identify these scenarios without requiring to wait multiple seconds per corner case expecting a certain element to load. To this effort, the OrgExtractor offer the concept of a "main_wrapper" which has been defined as a wrapper that can be found in every scenario. From there, for most scenarios, the system awaits for the visibility of this main wrapper and identifies the presences of a certain textual element in this main wrapper that allowed the scenario identification. This however isn't always possible, in fact, for the identifaction of REDACTED organizations there isn't a cut and clear discerning text that allows it's identification. In this scenario it proved necesary to find a element, incurring a small but relevant delay in all player org queries, even though the great majority of them do not have REDACTED organization.
 
 
-
-**This project has been kindly sponsored by friends at the Shadow Moses organization, the number #1 player vs player organization in the world.**
+**This project has been kindly sponsored by friends at the Shadow Moses organization, the unconstested number 1 player vs player organization in the world.**
