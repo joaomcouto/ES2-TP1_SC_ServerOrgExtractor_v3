@@ -25,6 +25,10 @@ class OrgExtractor(BaseCrawler):
         #print(self.currentWrapper.get_attribute('innerHTML'))
         redactedElement = self.currentWrapper.find_element(By.XPATH, "//div[contains(@class,'member-visibility-restriction')]")# and contains(@class,'trans-03s')]//div[contains(@class,'restriction-r') and contains(@class,'restriction')]")
 
+    def wait_and_set_main_wrapper(self, main_wrapper_locator):
+        self.main_wrapper_locator = main_wrapper_locator
+        self.currentWrapper = WebDriverWait(self.driver, 6).until(EC.visibility_of_element_located(self.main_wrapper_locator))
+
     def get_org_name(self, playerHandle):
         self.access_profile(playerHandle)
         
@@ -33,7 +37,7 @@ class OrgExtractor(BaseCrawler):
             raise Exception("ERROR: OCR HANDLE WRONG")
         try:
              
-            _ = super().wait_and_set_main_wrapper((By.ID ,'public-profile'))
+            _ = self.wait_and_set_main_wrapper((By.ID ,'public-profile'))
             #_ = self.wait_element_visibility_and_return_it(self.driver, self.main_wrapper_locator)
         except Exception as e:
             print(f"Wrapper for handle {playerHandle} wasn't found")

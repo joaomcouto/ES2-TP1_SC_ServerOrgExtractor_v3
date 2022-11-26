@@ -41,6 +41,3 @@ class BaseCrawler:
     def access_url(self, articleUrl):
         self.driver.get(articleUrl)
 
-    def wait_and_set_main_wrapper(self, main_wrapper_locator):
-        self.main_wrapper_locator = main_wrapper_locator
-        self.currentWrapper = WebDriverWait(self.driver, 6).until(EC.visibility_of_element_located(self.main_wrapper_locator))
