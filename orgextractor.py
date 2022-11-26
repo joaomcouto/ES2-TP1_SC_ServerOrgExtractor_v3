@@ -9,8 +9,7 @@ class OrgExtractor(BaseCrawler):
     def __init__(self, browser="chrome_headless"):
         super().__init__(browser)
 
-    def access_profile(self,playerHandle):
-        super().access_url("https://robertsspaceindustries.com/citizens/" + playerHandle + "/organizations")
+        
 
     def wait_element_visibility_and_return_it(self,expected_location, element_locator):
         myElem = WebDriverWait(expected_location, 6).until(EC.visibility_of_element_located(element_locator))
@@ -30,7 +29,7 @@ class OrgExtractor(BaseCrawler):
         self.currentWrapper = WebDriverWait(self.driver, 6).until(EC.visibility_of_element_located(self.main_wrapper_locator))
 
     def get_org_name(self, playerHandle):
-        self.access_profile(playerHandle)
+        super().access_url("https://robertsspaceindustries.com/citizens/" + playerHandle + "/organizations")
         
 
         if ("404 - Rob" in self.driver.title):
